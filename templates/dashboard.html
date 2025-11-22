@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Lawyer Booking App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <h1 class="logo">⚖️ Lawyer Booking App</h1>
+                <nav>
+                    <span>Welcome, {{ session.username }}</span>
+                    <a href="{{ url_for('my_appointments') }}">My Appointments</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="dashboard-hero">
+                <h2>Need Legal Assistance?</h2>
+                <p>Find and book a nearby lawyer based on your location</p>
+                <a href="{{ url_for('book_lawyer') }}" class="btn btn-primary btn-large">Book a Lawyer</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Lawyer Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+

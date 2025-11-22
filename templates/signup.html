@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Lawyer Booking App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="logo">⚖️ Lawyer Booking App</h1>
+            <h2>Create Account</h2>
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone (Optional)</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <div id="message" class="message"></div>
+            </form>
+            <p class="auth-link">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: document.getElementById('password').value
+            };
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = 'Creating account...';
+            messageDiv.className = 'message message-info';
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    messageDiv.textContent = '✓ ' + data.message;
+                    messageDiv.className = 'message message-success';
+                    setTimeout(() => window.location.href = '/dashboard', 1000);
+                } else {
+                    messageDiv.textContent = '✗ ' + data.message;
+                    messageDiv.className = 'message message-error';
+                }
+            } catch (error) {
+                messageDiv.textContent = '✗ An error occurred. Please try again.';
+                messageDiv.className = 'message message-error';
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lawyer.name }} - Lawyer Booking App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <h1 class="logo">⚖️ Lawyer Booking App</h1>
+                <nav>
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('my_appointments') }}">My Appointments</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <a href="{{ url_for('book_lawyer') }}" class="back-link">← Back to Lawyers</a>
+            
+            <div class="lawyer-profile">
+                <div class="profile-header">
+                    <div class="profile-image">
+                        <img src="{{ lawyer.image_url or 'https://via.placeholder.com/300x300?text=Lawyer' }}" alt="{{ lawyer.name }}">
+                    </div>
+                    <div class="profile-info">
+                        <h1>{{ lawyer.name }}</h1>
+                        <p class="specialization">{{ lawyer.specialization }}</p>
+                        <div class="profile-stats">
+                            <span class="rating">⭐ {{ lawyer.rating }} Rating</span>
+                            <span class="experience">{{ lawyer.experience }} Years Experience</span>
+                            <span class="rate">${{ "%.2f"|format(lawyer.hourly_rate) }}/hour</span>
+                        </div>
+                        <p class="location">📍 {{ lawyer.location }}</p>
+                        <div class="contact-info">
+                            <p>📧 {{ lawyer.email }}</p>
+                            <p>📞 {{ lawyer.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <div class="bio-section">
+                        <h2>About</h2>
+                        <p>{{ lawyer.bio or 'No bio available.' }}</p>
+                    </div>
+
+                    <div class="booking-section">
+                        <h2>Case Details & Payment</h2>
+                        <form id="case-form" class="booking-form">
+                            <input type="hidden" id="lawyer_id" value="{{ lawyer.id }}">
+                            
+                            <div class="form-group">
+                                <label for="case_type">Case Type *</label>
+                                <select id="case_type" name="case_type" required>
+                                    <option value="">Select case type...</option>
+                                    <option value="Criminal">Criminal</option>
+                                    <option value="Family">Family</option>
+                                    <option value="Corporate">Corporate</option>
+                                    <option value="Immigration">Immigration</option>
+                                    <option value="Personal Injury">Personal Injury</option>
+                                    <option value="Real Estate">Real Estate</option>
+                                    <option value="Employment">Employment</option>
+                                    <option value="Tax">Tax</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="case_description">Case Description *</label>
+                                <textarea id="case_description" name="case_description" rows="6" required placeholder="Please provide details about your case..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="payment_amount">Consultation Fee *</label>
+                                <input type="number" id="payment_amount" name="payment_amount" value="{{ "%.2f"|format(lawyer.hourly_rate) }}" step="0.01" min="0" required readonly>
+                                <small>Based on hourly rate: ${{ "%.2f"|format(lawyer.hourly_rate) }}/hour (1 hour consultation)</small>
+                            </div>
+                            
+                            <div class="payment-section">
+                                <h3>Payment Information</h3>
+                                <div class="form-group">
+                                    <label for="card_number">Card Number *</label>
+                                    <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="expiry_date">Expiry Date *</label>
+                                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" maxlength="5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cvv">CVV *</label>
+                                        <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="card_name">Cardholder Name *</label>
+                                    <input type="text" id="card_name" name="card_name" required>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-large">Submit & Pay</button>
+                            <div id="booking-message" class="message"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Lawyer Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Format card number
+        document.getElementById('card_number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Format expiry date
+        document.getElementById('expiry_date').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Only allow numbers for CVV
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        document.getElementById('case-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                lawyer_id: document.getElementById('lawyer_id').value,
+                case_type: document.getElementById('case_type').value,
+                case_description: document.getElementById('case_description').value,
+                payment_amount: document.getElementById('payment_amount').value
+            };
+
+            const messageDiv = document.getElementById('booking-message');
+            messageDiv.textContent = 'Processing payment and booking...';
+            messageDiv.className = 'message message-info';
+
+            try {
+                const response = await fetch('/submit-case', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    messageDiv.textContent = '✓ Booking confirmed! Redirecting...';
+                    messageDiv.className = 'message message-success';
+                    setTimeout(() => {
+                        window.location.href = `/confirmation/${data.appointment_id}`;
+                    }, 1500);
+                } else {
+                    messageDiv.textContent = '✗ ' + data.message;
+                    messageDiv.className = 'message message-error';
+                }
+            } catch (error) {
+                messageDiv.textContent = '✗ An error occurred. Please try again.';
+                messageDiv.className = 'message message-error';
+            }
+        });
+    </script>
+</body>
+</html>
+

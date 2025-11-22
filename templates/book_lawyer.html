@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Lawyer - Lawyer Booking App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <h1 class="logo">⚖️ Lawyer Booking App</h1>
+                <nav>
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('my_appointments') }}">My Appointments</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="location-prompt" id="location-prompt">
+                <h2>📍 Enable Location Services</h2>
+                <p>We need your location to find nearby lawyers</p>
+                <button id="enable-location-btn" class="btn btn-primary">Turn On Location</button>
+                <div id="location-message" class="message"></div>
+            </div>
+
+            <div class="lawyers-section" id="lawyers-section" style="display: none;">
+                <h2 class="section-title">Nearby Lawyers (Sorted by Rating)</h2>
+                <div id="lawyers-grid" class="lawyers-grid"></div>
+                <div id="no-lawyers" class="empty-state" style="display: none;">
+                    <p>No lawyers found nearby. Try increasing the search radius.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Lawyer Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let userLocation = null;
+
+        document.getElementById('enable-location-btn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                const messageDiv = document.getElementById('location-message');
+                messageDiv.textContent = 'Getting your location...';
+                messageDiv.className = 'message message-info';
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        userLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
+                        messageDiv.textContent = '✓ Location enabled!';
+                        messageDiv.className = 'message message-success';
+                        document.getElementById('location-prompt').style.display = 'none';
+                        document.getElementById('lawyers-section').style.display = 'block';
+                        loadNearbyLawyers();
+                    },
+                    function(error) {
+                        messageDiv.textContent = '✗ Unable to get location. Please enable location services.';
+                        messageDiv.className = 'message message-error';
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        });
+
+        async function loadNearbyLawyers() {
+            if (!userLocation) return;
+            
+            try {
+                const response = await fetch('/api/nearby-lawyers', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        latitude: userLocation.latitude,
+                        longitude: userLocation.longitude,
+                        max_distance: 100
+                    })
+                });
+                const data = await response.json();
+                displayLawyers(data.lawyers);
+            } catch (error) {
+                console.error('Error loading lawyers:', error);
+            }
+        }
+
+        function displayLawyers(lawyers) {
+            const grid = document.getElementById('lawyers-grid');
+            const noLawyers = document.getElementById('no-lawyers');
+            
+            if (lawyers.length === 0) {
+                grid.style.display = 'none';
+                noLawyers.style.display = 'block';
+                return;
+            }
+            
+            grid.innerHTML = lawyers.map(lawyer => `
+                <div class="lawyer-card">
+                    <div class="lawyer-image">
+                        <img src="${lawyer.image_url}" alt="${lawyer.name}">
+                    </div>
+                    <div class="lawyer-info">
+                        <h3>${lawyer.name}</h3>
+                        <p class="specialization">${lawyer.specialization}</p>
+                        <div class="lawyer-details">
+                            <span class="rating">⭐ ${lawyer.rating}</span>
+                            <span class="experience">${lawyer.experience} years</span>
+                            <span class="distance">📍 ${lawyer.distance} km away</span>
+                        </div>
+                        <p class="location">${lawyer.location}</p>
+                        <p class="rate">$${lawyer.hourly_rate.toFixed(2)}/hour</p>
+                        <a href="/lawyer/${lawyer.id}" class="btn btn-primary">Select Lawyer</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - Lawyer Booking App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <h1 class="logo">⚖️ Lawyer Booking App</h1>
+                <nav>
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('my_appointments') }}">My Appointments</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="confirmation-card">
+                <div class="confirmation-icon">✓</div>
+                <h1>Booking Confirmed!</h1>
+                <p class="confirmation-message">Your appointment has been successfully booked.</p>
+                
+                <div class="appointment-details">
+                    <h2>Appointment Details</h2>
+                    <div class="detail-row">
+                        <span class="detail-label">Lawyer:</span>
+                        <span class="detail-value">{{ appointment.lawyer.name }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Specialization:</span>
+                        <span class="detail-value">{{ appointment.lawyer.specialization }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Case Type:</span>
+                        <span class="detail-value">{{ appointment.case_type }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Consultation Date:</span>
+                        <span class="detail-value">{{ appointment.consultation_date.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Consultation Time:</span>
+                        <span class="detail-value">{{ appointment.consultation_time }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Amount:</span>
+                        <span class="detail-value">${{ "%.2f"|format(appointment.payment_amount) }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Status:</span>
+                        <span class="detail-value status-confirmed">{{ appointment.payment_status|title }}</span>
+                    </div>
+                </div>
+
+                <div class="case-description">
+                    <h3>Case Description</h3>
+                    <p>{{ appointment.case_description }}</p>
+                </div>
+
+                <div class="confirmation-actions">
+                    <a href="{{ url_for('my_appointments') }}" class="btn btn-primary">View All Appointments</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Lawyer Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
