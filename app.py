@@ -342,9 +342,611 @@ def init_db():
             db.session.add_all(sample_lawyers)
             db.session.commit()
 
-# Initialize database for both local development and Render/Gunicorn
-init_db()
+# Initialize database and seed India demo lawyers
+def init_db():
+    with app.app_context():
+        db.create_all()
 
-if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5000)
+        demo_lawyers = [
+            {
+                "name": "Demo Lawyer Delhi",
+                "specialization": "Family Law",
+                "experience": 10,
+                "rating": 4.8,
+                "latitude": 28.6139,
+                "longitude": 77.2090,
+                "location": "New Delhi, Delhi",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Mumbai",
+                "specialization": "Corporate Law",
+                "experience": 12,
+                "rating": 4.7,
+                "latitude": 19.0760,
+                "longitude": 72.8777,
+                "location": "Mumbai, Maharashtra",
+                "hourly_rate": 1500,
+            },
+            {
+                "name": "Demo Lawyer Hyderabad",
+                "specialization": "Property Law",
+                "experience": 8,
+                "rating": 4.6,
+                "latitude": 17.3850,
+                "longitude": 78.4867,
+                "location": "Hyderabad, Telangana",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Visakhapatnam",
+                "specialization": "Civil Law",
+                "experience": 7,
+                "rating": 4.5,
+                "latitude": 17.6868,
+                "longitude": 83.2185,
+                "location": "Visakhapatnam, Andhra Pradesh",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Bengaluru",
+                "specialization": "IT Law",
+                "experience": 9,
+                "rating": 4.7,
+                "latitude": 12.9716,
+                "longitude": 77.5946,
+                "location": "Bengaluru, Karnataka",
+                "hourly_rate": 1200,
+            },
+            {
+                "name": "Demo Lawyer Chennai",
+                "specialization": "Criminal Law",
+                "experience": 11,
+                "rating": 4.6,
+                "latitude": 13.0827,
+                "longitude": 80.2707,
+                "location": "Chennai, Tamil Nadu",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Kolkata",
+                "specialization": "Consumer Law",
+                "experience": 6,
+                "rating": 4.4,
+                "latitude": 22.5726,
+                "longitude": 88.3639,
+                "location": "Kolkata, West Bengal",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Ahmedabad",
+                "specialization": "Business Law",
+                "experience": 10,
+                "rating": 4.6,
+                "latitude": 23.0225,
+                "longitude": 72.5714,
+                "location": "Ahmedabad, Gujarat",
+                "hourly_rate": 900,
+            },
+            {
+                "name": "Demo Lawyer Pune",
+                "specialization": "Labour Law",
+                "experience": 8,
+                "rating": 4.5,
+                "latitude": 18.5204,
+                "longitude": 73.8567,
+                "location": "Pune, Maharashtra",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Jaipur",
+                "specialization": "Property Law",
+                "experience": 9,
+                "rating": 4.5,
+                "latitude": 26.9124,
+                "longitude": 75.7873,
+                "location": "Jaipur, Rajasthan",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Lucknow",
+                "specialization": "Family Law",
+                "experience": 7,
+                "rating": 4.4,
+                "latitude": 26.8467,
+                "longitude": 80.9462,
+                "location": "Lucknow, Uttar Pradesh",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Vijayawada",
+                "specialization": "Civil Law",
+                "experience": 6,
+                "rating": 4.5,
+                "latitude": 16.5062,
+                "longitude": 80.6480,
+                "location": "Vijayawada, Andhra Pradesh",
+                "hourly_rate": 600,
+            },
+        ]
+
+        for item in demo_lawyers:
+            email = (
+                item["name"].lower().replace(" ", ".")
+                + "@demo.vakeelsaab.test"
+            )
+
+            existing = Lawyer.query.filter_by(email=email).first()
+
+            if not existing:
+                lawyer = Lawyer(
+                    **item,
+                    email=email,
+                    bio=(
+                        "Fictional demo profile for app testing only. "
+                        "Not a real or verified lawyer."
+                    ),
+                    phone=None,
+                    image_url=None,
+                )
+                db.session.add(lawyer)
+
+        db.session.commit()
+
+
+# Initialize database and seed India demo lawyers
+def init_db():
+    with app.app_context():
+        db.create_all()
+
+        demo_lawyers = [
+            {
+                "name": "Demo Lawyer Delhi",
+                "specialization": "Family Law",
+                "experience": 10,
+                "rating": 4.8,
+                "latitude": 28.6139,
+                "longitude": 77.2090,
+                "location": "New Delhi, Delhi",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Mumbai",
+                "specialization": "Corporate Law",
+                "experience": 12,
+                "rating": 4.7,
+                "latitude": 19.0760,
+                "longitude": 72.8777,
+                "location": "Mumbai, Maharashtra",
+                "hourly_rate": 1500,
+            },
+            {
+                "name": "Demo Lawyer Hyderabad",
+                "specialization": "Property Law",
+                "experience": 8,
+                "rating": 4.6,
+                "latitude": 17.3850,
+                "longitude": 78.4867,
+                "location": "Hyderabad, Telangana",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Visakhapatnam",
+                "specialization": "Civil Law",
+                "experience": 7,
+                "rating": 4.5,
+                "latitude": 17.6868,
+                "longitude": 83.2185,
+                "location": "Visakhapatnam, Andhra Pradesh",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Bengaluru",
+                "specialization": "IT Law",
+                "experience": 9,
+                "rating": 4.7,
+                "latitude": 12.9716,
+                "longitude": 77.5946,
+                "location": "Bengaluru, Karnataka",
+                "hourly_rate": 1200,
+            },
+            {
+                "name": "Demo Lawyer Chennai",
+                "specialization": "Criminal Law",
+                "experience": 11,
+                "rating": 4.6,
+                "latitude": 13.0827,
+                "longitude": 80.2707,
+                "location": "Chennai, Tamil Nadu",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Kolkata",
+                "specialization": "Consumer Law",
+                "experience": 6,
+                "rating": 4.4,
+                "latitude": 22.5726,
+                "longitude": 88.3639,
+                "location": "Kolkata, West Bengal",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Ahmedabad",
+                "specialization": "Business Law",
+                "experience": 10,
+                "rating": 4.6,
+                "latitude": 23.0225,
+                "longitude": 72.5714,
+                "location": "Ahmedabad, Gujarat",
+                "hourly_rate": 900,
+            },
+            {
+                "name": "Demo Lawyer Pune",
+                "specialization": "Labour Law",
+                "experience": 8,
+                "rating": 4.5,
+                "latitude": 18.5204,
+                "longitude": 73.8567,
+                "location": "Pune, Maharashtra",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Jaipur",
+                "specialization": "Property Law",
+                "experience": 9,
+                "rating": 4.5,
+                "latitude": 26.9124,
+                "longitude": 75.7873,
+                "location": "Jaipur, Rajasthan",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Lucknow",
+                "specialization": "Family Law",
+                "experience": 7,
+                "rating": 4.4,
+                "latitude": 26.8467,
+                "longitude": 80.9462,
+                "location": "Lucknow, Uttar Pradesh",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Vijayawada",
+                "specialization": "Civil Law",
+                "experience": 6,
+                "rating": 4.5,
+                "latitude": 16.5062,
+                "longitude": 80.6480,
+                "location": "Vijayawada, Andhra Pradesh",
+                "hourly_rate": 600,
+            },
+        ]
+
+        for item in demo_lawyers:
+            email = (
+                item["name"].lower().replace(" ", ".")
+                + "@demo.vakeelsaab.test"
+            )
+
+            existing = Lawyer.query.filter_by(email=email).first()
+
+            if not existing:
+                lawyer = Lawyer(
+                    **item,
+                    email=email,
+                    bio=(
+                        "Fictional demo profile for app testing only. "
+                        "Not a real or verified lawyer."
+                    ),
+                    phone=None,
+                    image_url=None,
+                )
+                db.session.add(lawyer)
+
+        db.session.commit()
+
+
+# Initialize database and seed India demo lawyers
+def init_db():
+    with app.app_context():
+        db.create_all()
+
+        demo_lawyers = [
+            {
+                "name": "Demo Lawyer Delhi",
+                "specialization": "Family Law",
+                "experience": 10,
+                "rating": 4.8,
+                "latitude": 28.6139,
+                "longitude": 77.2090,
+                "location": "New Delhi, Delhi",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Mumbai",
+                "specialization": "Corporate Law",
+                "experience": 12,
+                "rating": 4.7,
+                "latitude": 19.0760,
+                "longitude": 72.8777,
+                "location": "Mumbai, Maharashtra",
+                "hourly_rate": 1500,
+            },
+            {
+                "name": "Demo Lawyer Hyderabad",
+                "specialization": "Property Law",
+                "experience": 8,
+                "rating": 4.6,
+                "latitude": 17.3850,
+                "longitude": 78.4867,
+                "location": "Hyderabad, Telangana",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Visakhapatnam",
+                "specialization": "Civil Law",
+                "experience": 7,
+                "rating": 4.5,
+                "latitude": 17.6868,
+                "longitude": 83.2185,
+                "location": "Visakhapatnam, Andhra Pradesh",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Bengaluru",
+                "specialization": "IT Law",
+                "experience": 9,
+                "rating": 4.7,
+                "latitude": 12.9716,
+                "longitude": 77.5946,
+                "location": "Bengaluru, Karnataka",
+                "hourly_rate": 1200,
+            },
+            {
+                "name": "Demo Lawyer Chennai",
+                "specialization": "Criminal Law",
+                "experience": 11,
+                "rating": 4.6,
+                "latitude": 13.0827,
+                "longitude": 80.2707,
+                "location": "Chennai, Tamil Nadu",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Kolkata",
+                "specialization": "Consumer Law",
+                "experience": 6,
+                "rating": 4.4,
+                "latitude": 22.5726,
+                "longitude": 88.3639,
+                "location": "Kolkata, West Bengal",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Ahmedabad",
+                "specialization": "Business Law",
+                "experience": 10,
+                "rating": 4.6,
+                "latitude": 23.0225,
+                "longitude": 72.5714,
+                "location": "Ahmedabad, Gujarat",
+                "hourly_rate": 900,
+            },
+            {
+                "name": "Demo Lawyer Pune",
+                "specialization": "Labour Law",
+                "experience": 8,
+                "rating": 4.5,
+                "latitude": 18.5204,
+                "longitude": 73.8567,
+                "location": "Pune, Maharashtra",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Jaipur",
+                "specialization": "Property Law",
+                "experience": 9,
+                "rating": 4.5,
+                "latitude": 26.9124,
+                "longitude": 75.7873,
+                "location": "Jaipur, Rajasthan",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Lucknow",
+                "specialization": "Family Law",
+                "experience": 7,
+                "rating": 4.4,
+                "latitude": 26.8467,
+                "longitude": 80.9462,
+                "location": "Lucknow, Uttar Pradesh",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Vijayawada",
+                "specialization": "Civil Law",
+                "experience": 6,
+                "rating": 4.5,
+                "latitude": 16.5062,
+                "longitude": 80.6480,
+                "location": "Vijayawada, Andhra Pradesh",
+                "hourly_rate": 600,
+            },
+        ]
+
+        for item in demo_lawyers:
+            email = (
+                item["name"].lower().replace(" ", ".")
+                + "@demo.vakeelsaab.test"
+            )
+
+            existing = Lawyer.query.filter_by(email=email).first()
+
+            if not existing:
+                lawyer = Lawyer(
+                    **item,
+                    email=email,
+                    bio=(
+                        "Fictional demo profile for app testing only. "
+                        "Not a real or verified lawyer."
+                    ),
+                    phone=None,
+                    image_url=None,
+                )
+                db.session.add(lawyer)
+
+        db.session.commit()
+
+
+# Initialize when # Initialize database and seed India demo lawyers
+def init_db():
+    with app.app_context():
+        db.create_all()
+
+        demo_lawyers = [
+            {
+                "name": "Demo Lawyer Delhi",
+                "specialization": "Family Law",
+                "experience": 10,
+                "rating": 4.8,
+                "latitude": 28.6139,
+                "longitude": 77.2090,
+                "location": "New Delhi, Delhi",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Mumbai",
+                "specialization": "Corporate Law",
+                "experience": 12,
+                "rating": 4.7,
+                "latitude": 19.0760,
+                "longitude": 72.8777,
+                "location": "Mumbai, Maharashtra",
+                "hourly_rate": 1500,
+            },
+            {
+                "name": "Demo Lawyer Hyderabad",
+                "specialization": "Property Law",
+                "experience": 8,
+                "rating": 4.6,
+                "latitude": 17.3850,
+                "longitude": 78.4867,
+                "location": "Hyderabad, Telangana",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Visakhapatnam",
+                "specialization": "Civil Law",
+                "experience": 7,
+                "rating": 4.5,
+                "latitude": 17.6868,
+                "longitude": 83.2185,
+                "location": "Visakhapatnam, Andhra Pradesh",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Bengaluru",
+                "specialization": "IT Law",
+                "experience": 9,
+                "rating": 4.7,
+                "latitude": 12.9716,
+                "longitude": 77.5946,
+                "location": "Bengaluru, Karnataka",
+                "hourly_rate": 1200,
+            },
+            {
+                "name": "Demo Lawyer Chennai",
+                "specialization": "Criminal Law",
+                "experience": 11,
+                "rating": 4.6,
+                "latitude": 13.0827,
+                "longitude": 80.2707,
+                "location": "Chennai, Tamil Nadu",
+                "hourly_rate": 1000,
+            },
+            {
+                "name": "Demo Lawyer Kolkata",
+                "specialization": "Consumer Law",
+                "experience": 6,
+                "rating": 4.4,
+                "latitude": 22.5726,
+                "longitude": 88.3639,
+                "location": "Kolkata, West Bengal",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Ahmedabad",
+                "specialization": "Business Law",
+                "experience": 10,
+                "rating": 4.6,
+                "latitude": 23.0225,
+                "longitude": 72.5714,
+                "location": "Ahmedabad, Gujarat",
+                "hourly_rate": 900,
+            },
+            {
+                "name": "Demo Lawyer Pune",
+                "specialization": "Labour Law",
+                "experience": 8,
+                "rating": 4.5,
+                "latitude": 18.5204,
+                "longitude": 73.8567,
+                "location": "Pune, Maharashtra",
+                "hourly_rate": 800,
+            },
+            {
+                "name": "Demo Lawyer Jaipur",
+                "specialization": "Property Law",
+                "experience": 9,
+                "rating": 4.5,
+                "latitude": 26.9124,
+                "longitude": 75.7873,
+                "location": "Jaipur, Rajasthan",
+                "hourly_rate": 700,
+            },
+            {
+                "name": "Demo Lawyer Lucknow",
+                "specialization": "Family Law",
+                "experience": 7,
+                "rating": 4.4,
+                "latitude": 26.8467,
+                "longitude": 80.9462,
+                "location": "Lucknow, Uttar Pradesh",
+                "hourly_rate": 600,
+            },
+            {
+                "name": "Demo Lawyer Vijayawada",
+                "specialization": "Civil Law",
+                "experience": 6,
+                "rating": 4.5,
+                "latitude": 16.5062,
+                "longitude": 80.6480,
+                "location": "Vijayawada, Andhra Pradesh",
+                "hourly_rate": 600,
+            },
+        ]
+
+        for item in demo_lawyers:
+            email = (
+                item["name"].lower().replace(" ", ".")
+                + "@demo.vakeelsaab.test"
+            )
+
+            existing = Lawyer.query.filter_by(email=email).first()
+
+            if not existing:
+                lawyer = Lawyer(
+                    **item,
+                    email=email,
+                    bio=(
+                        "Fictional demo profile for app testing only. "
+                        "Not a real or verified lawyer."
+                    ),
+                    phone=None,
+                    image_url=None,
+                )
+                db.session.add(lawyer)
+
+        db.session.commit()
+
 
