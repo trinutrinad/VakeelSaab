@@ -342,7 +342,9 @@ def init_db():
             db.session.add_all(sample_lawyers)
             db.session.commit()
 
+# Initialize database for both local development and Render/Gunicorn
+init_db()
+
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True, host='127.0.0.1', port=5000)
 
