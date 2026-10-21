@@ -3,10 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from math import radians, cos, sin, asin, sqrt
-import secrets
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = secrets.token_hex(16)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-only-change-me')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lawyer_booking.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
