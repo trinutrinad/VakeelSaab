@@ -1,6 +1,15 @@
-Flask==2.3.3
-Flask-SQLAlchemy==3.0.5
-Werkzeug==2.3.7
+Flask==3.1.3
+Flask-SQLAlchemy==3.1.1
+Werkzeug==3.1.3
 
+# WSGI server used by the Procfile start command.
+gunicorn==23.0.0
 
-gunicorn
+# PostgreSQL driver. Required when DATABASE_URL points at PostgreSQL, which is
+# what Render provides. Without it, SQLAlchemy raises ModuleNotFoundError on
+# the first query and every request fails with a 500.
+psycopg[binary]==3.2.3
+
+# Test-only dependency, pinned here so `pip install -r requirements.txt` is
+# enough to run the suite on a host that installs a single requirements file.
+pytest==9.1.1

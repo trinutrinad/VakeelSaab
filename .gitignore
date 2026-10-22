@@ -54,3 +54,12 @@ Thumbs.db
 # Logs
 *.log
 
+# Android build outputs. The android/ directory holds only compiled
+# intermediates and a debug APK, no source, so none of it belongs in git.
+*.apk
+*.aab
+*.dex
+android/.gradle/
+android/local.properties
+android/app/release/
+

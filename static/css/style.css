@@ -626,6 +626,12 @@ body {
     color: #991b1b;
 }
 
+/* Payment recorded without a connected gateway: not real money collected. */
+.status-simulated {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
 .appointment-details p {
     margin-bottom: 0.75rem;
     color: var(--text-color);
