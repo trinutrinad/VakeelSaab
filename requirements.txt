@@ -8,7 +8,7 @@ gunicorn==23.0.0
 # PostgreSQL driver. Required when DATABASE_URL points at PostgreSQL, which is
 # what Render provides. Without it, SQLAlchemy raises ModuleNotFoundError on
 # the first query and every request fails with a 500.
-psycopg[binary]==3.2.3
+psycopg[binary]==3.2.13
 
 # Test-only dependency, pinned here so `pip install -r requirements.txt` is
 # enough to run the suite on a host that installs a single requirements file.
